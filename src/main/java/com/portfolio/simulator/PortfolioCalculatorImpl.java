@@ -48,14 +48,14 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 		
 		int middle = values.length/2;
 		
-	    if ((values.length % 2) == 1) 
-	    {
-	        return values[middle];
-	    }
-	    else 
-	    {
-	        return (values[middle-1] + values[middle]) / 2;
-	    }
+	        if ((values.length % 2) == 1) 
+	        {
+	            return values[middle];
+	        }
+	        else 
+	        {
+	            return (values[middle-1] + values[middle]) / 2;
+	        }
 	}
 	
 	/*
