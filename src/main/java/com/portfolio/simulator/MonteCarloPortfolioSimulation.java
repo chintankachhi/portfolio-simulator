@@ -14,7 +14,7 @@ public class MonteCarloPortfolioSimulation {
 		double initialInvestment = 100000.00;
 		int simulationPeriod = 20;
 		double aggressivePortfolioReturn = 0.094324;
-        double aggressivePortfolioRisk = 0.15675;
+                double aggressivePortfolioRisk = 0.15675;
 		double veryConservativePortfolioReturn = 0.06189;
 		double veryConservativePortfolioRisk = 0.063438;
 		NumberFormat formatter = NumberFormat.getCurrencyInstance();
