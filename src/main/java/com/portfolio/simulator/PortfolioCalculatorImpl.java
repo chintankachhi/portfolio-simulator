@@ -107,7 +107,7 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 		
 		for (int i = 0; i < NUMBEROFSIMULATIONS; i++)
 		{
-			currentValue = initialInvestment;
+		    currentValue = initialInvestment;
 		
 		    for (int j = 1; j <= simulationPeriod; j++)
 		    {
