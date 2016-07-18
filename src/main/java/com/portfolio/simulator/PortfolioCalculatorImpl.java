@@ -6,16 +6,18 @@ import java.util.Random;
  * This implementation is used to calculate the expected value and percentiles for a given portfolio.
  * It uses the Geometric Brownian motion (GBM) model in the calculation as follows:
  * Next year's portfolio value = current portfolio value + current portfolio value * ((return * time period) + standard deviation * random value * sqrt(time period))
- * In our case, since we are calculating iteratively every year, time period will be one year. We use the default value of 10,000 for the 
- * number of simulations.
+ * In our case, since we are calculating iteratively every year, time period will be one year.
  */
 public class PortfolioCalculatorImpl implements PortfolioCalculator {
 	
 	private Portfolio portfolio;
 	private int simulationPeriod;
-	private static final int NUMBEROFSIMULATIONS = 10000;
 	private double initialInvestment;
+	private double inflationRate;
+	private int numberOfSimulations;
 	private double[] values;
+	private static final int DEFAULTNUMBEROFSIMULATIONS = 10000;
+	
 	
 	// flag to indicate whether the simulation values have been created.
 	private boolean createdSimulationValues = false;
@@ -26,14 +28,20 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 	 * @param simulationPeriod 
 	 *                    The desired simulation period in years for the given portfolio.
 	 * @param initialInvestment
-	 *                    The initial investment in the portfolio. 
+	 *                    The initial investment in the portfolio.
+	 * @param inflationRate
+	 *                   The percent inflation rate.
+	 * @param numberOfSimulations
+	 *                   The number of simulations to perform for the calculations. If a negative value is passed, it will default to 10,000 simulations.             
 	 */
-	public PortfolioCalculatorImpl(Portfolio portfolio, int simulationPeriod, double initialInvestment)
+	public PortfolioCalculatorImpl(Portfolio portfolio, int simulationPeriod, double initialInvestment, double inflationRate, int numberOfSimulations)
 	{
 		this.portfolio = portfolio;
 		this.simulationPeriod = simulationPeriod;
 		this.initialInvestment = initialInvestment;
-		values = new double[NUMBEROFSIMULATIONS];
+		this.inflationRate = inflationRate;
+		this.numberOfSimulations = (numberOfSimulations > 0) ? numberOfSimulations : DEFAULTNUMBEROFSIMULATIONS;
+		values = new double[this.numberOfSimulations];
 	}
 	
 	/*
@@ -43,19 +51,19 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 	{
 		if (!isCreatedSimulationValues())
 		{	
-		   createSimulationValues();
+			createSimulationValues();
 		}
 		
 		int middle = values.length/2;
 		
-	        if ((values.length % 2) == 1) 
-	        {
-	            return values[middle];
-	        }
-	        else 
-	        {
-	            return (values[middle-1] + values[middle]) / 2;
-	        }
+		if ((values.length % 2) == 1) 
+		{
+			return values[middle];
+		}
+		else 
+		{
+			return (values[middle-1] + values[middle]) / 2;
+		}
 	}
 	
 	/*
@@ -76,7 +84,7 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 		   createSimulationValues();
 		}
 		
-		return values[((NUMBEROFSIMULATIONS*percentileValue/100) - 1)];
+		return values[((numberOfSimulations*percentileValue/100) - 1)];
 	}
 	
 	/*
@@ -105,7 +113,10 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 		Random random = new Random();
 		double randomValue;
 		
-		for (int i = 0; i < NUMBEROFSIMULATIONS; i++)
+		// convert the inflation rate from percentage value to non-percentage value for calculation purposes
+		inflationRate /= 100;
+		
+		for (int i = 0; i < numberOfSimulations; i++)
 		{
 		    currentValue = initialInvestment;
 		
@@ -113,9 +124,9 @@ public class PortfolioCalculatorImpl implements PortfolioCalculator {
 		    {
 		       randomValue = random.nextGaussian();
 				
-		       // Use the Geometric Brownian motion (GBM) model formula to calculate the portolio values and add an inflation adjusted rate of 3.5% for each year.
+		       // Use the Geometric Brownian motion (GBM) model formula to calculate the portfolio values with the inflation adjusted rate.
+		       currentValue -= currentValue * (inflationRate);
 		       currentValue += currentValue * (portfolio.getMean() + portfolio.getStandardDeviation() * randomValue);
-		       currentValue += currentValue* (0.035);
 		    }
 		   
 		    values[i] = currentValue;

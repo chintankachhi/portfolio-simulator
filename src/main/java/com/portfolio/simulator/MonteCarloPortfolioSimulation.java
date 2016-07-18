@@ -1,60 +1,78 @@
 package com.portfolio.simulator;
 
-import java.text.NumberFormat;
+import java.util.Scanner;
 
 /*
  * This is the main class to run the program.
- * It uses the Monte Carlo Simulation for predicting the values of aggressive and very conservative portfolios after 20 years.
- * It uses the test values for the risk and the return given in the java programming challenge for testing purposes.
+ * It takes in the values through the user input and uses the MonteCarloSimulationUtil class for predicting and displaying the values of 
+ * aggressive and very conservative portfolios based on those values.
  */
 public class MonteCarloPortfolioSimulation {
 	
-	public static void main (String [] args) 
+	public static void main (String [] args)
 	{
-		double initialInvestment = 100000.00;
-		int simulationPeriod = 20;
-		double aggressivePortfolioReturn = 0.094324;
-                double aggressivePortfolioRisk = 0.15675;
-		double veryConservativePortfolioReturn = 0.06189;
-		double veryConservativePortfolioRisk = 0.063438;
-		NumberFormat formatter = NumberFormat.getCurrencyInstance();
+		double initialInvestment;
+		int simulationPeriod;
+		double aggressivePortfolioReturn;
+        double aggressivePortfolioRisk;
+        double veryConservativePortfolioReturn;
+        double veryConservativePortfolioRisk;
+        double inflationRate;
+        int numberOfSimulations;
 		
-		System.out.println("Monte Carlo Simulation Results:");
+		Scanner input = new Scanner(System.in);
+		 
+	    System.out.print("Enter the initial amount: ");
+	    initialInvestment = input.nextDouble();
+	 
+	    System.out.print("Enter the simulation period (years): ");
+	    simulationPeriod = input.nextInt();
+	    
+	    System.out.print("Enter the aggressive portfolio return percentage: ");
+	    aggressivePortfolioReturn = input.nextDouble();
+	    
+	    System.out.print("Enter the aggressive portfolio risk percentage: ");
+	    aggressivePortfolioRisk = input.nextDouble();
+	    
+	    System.out.print("Enter the very conservative portfolio return percentage: ");
+	    veryConservativePortfolioReturn = input.nextDouble();
+	    
+	    System.out.print("Enter the very conservative portfolio risk percentage: ");
+	    veryConservativePortfolioRisk = input.nextDouble();
+	    
+	    System.out.print("Enter the percentage value for the inflation rate: ");
+	    inflationRate = input.nextDouble();
+	    
+	    System.out.print("Enter the number of simulations: ");
+	    numberOfSimulations = input.nextInt();
+	    
+	    input.close();
+	    
+	    System.out.println();
+	    System.out.println("Monte Carlo Simulation Results:");
 		System.out.println();
-				
-		Portfolio aggressivePortfolio = new Portfolio(aggressivePortfolioReturn, aggressivePortfolioRisk);
 		
-		// create the portfolio calculator for the aggressive portfolio to get its expected values.
-		PortfolioCalculator portfolioCalculator= new PortfolioCalculatorImpl
-				                                 (aggressivePortfolio, simulationPeriod, initialInvestment);
-		
-		try
-		{
-		   double portfolioExpectedMedianReturn = portfolioCalculator.getMedian();
-		   double ninetiethPercentile = portfolioCalculator.getPercentile(90);
-		   double tenthPercentile = portfolioCalculator.getPercentile(10);
-		
-		   System.out.println("The median return for the aggressive portfolio after 20 years is: " + formatter.format(portfolioExpectedMedianReturn));
-		   System.out.println("The 10% best case for the aggressive portfolio after 20 years is: " + formatter.format(ninetiethPercentile));
-		   System.out.println("The 10% worst case for the aggressive portfolio after 20 years is: " + formatter.format(tenthPercentile));
-		
-		   Portfolio veryConservativePortfolio = new Portfolio(veryConservativePortfolioReturn, veryConservativePortfolioRisk);
-		
-		   // create the portfolio calculator for the very conservative portfolio to get its expected values.
-		   portfolioCalculator= new PortfolioCalculatorImpl
-                   (veryConservativePortfolio,simulationPeriod, initialInvestment);
-		
-		   portfolioExpectedMedianReturn = portfolioCalculator.getMedian();
-		   ninetiethPercentile = portfolioCalculator.getPercentile(90);
-		   tenthPercentile = portfolioCalculator.getPercentile(10);
-		
-		   System.out.println();
-		   System.out.println("The median return for the very conservative portfolio after 20 years is: " + formatter.format(portfolioExpectedMedianReturn));		
-		   System.out.println("The 10% best case for the very conservative portfolio after 20 years is: " + formatter.format(ninetiethPercentile));
-		   System.out.println("The 10% worst case for the very conservative portfolio after 20 years is: " + formatter.format(tenthPercentile));
+		System.out.println("For the aggressive portfolio:");
+	    
+	    try 
+	    {
+			MonteCarloSimulationUtil.printSimulationValues
+			(initialInvestment, simulationPeriod, aggressivePortfolioReturn, aggressivePortfolioRisk, inflationRate, numberOfSimulations);
+		} 
+	    catch (InvalidSimulationException e) {
+			e.printStackTrace();
 		}
-		catch (InvalidSimulationException e)
-		{
+	    
+	    System.out.println();
+	    System.out.println("For the very conservative portfolio:");
+	    
+	    try 
+	    {
+			MonteCarloSimulationUtil.printSimulationValues
+			(initialInvestment, simulationPeriod, veryConservativePortfolioReturn, veryConservativePortfolioRisk, inflationRate, numberOfSimulations);
+		}
+	    catch (InvalidSimulationException e) 
+	    {
 			e.printStackTrace();
 		}
 	}
