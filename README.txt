@@ -4,3 +4,8 @@ Portfolio Type - Aggressive: Return (Mean): 9.4324%, Risk (Standard Deviation): 
 Portfolio Type – Very Conservative: Return (Mean): 6.189%, Risk (Standard Deviation): 6.3438
 
 The SimulationResult.PNG file shows the screenshot of a test simulation run.
+
+-----------------------------------------------------------------------------------
+
+Changes were made to create the MonteCarloSimulationUtil class that accepts parameters, and there were also changes for inflation adjustment.
+The UpdatedSimulationResult.PNG file shows the updated screenshot of the test simulation run after the changes.
